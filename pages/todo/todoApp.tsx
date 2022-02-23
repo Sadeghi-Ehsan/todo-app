@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import TodoForm from "./todoForm";
-import TodoList from "./todoList";
+import TodoList from "./TodoList";
 
 const TodoApp = () => {
     const initialState = () =>  [];
@@ -59,8 +59,8 @@ const TodoApp = () => {
         setTasks((prevState) => prevState.filter((task) => task.id !== id));
     };
 
-    const handleEdit = (id) => {
-        const item = tasks.find((task) => task.id === id);
+    const handleEdit = (id:any) => {
+        const item = tasks.find((task:any) => task.id === id);
         setNewTask(item.title);
         setIsEditing(true);
         setEditId(item.id);
@@ -68,7 +68,7 @@ const TodoApp = () => {
     };
 
     const handleCheck = (title:any, id:any) => {
-        if (tasks.find((task) => task.id === id).completed) {
+        if (tasks.find((task:any) => task.id === id).completed) {
             const newArr = tasks.slice();
             const indexArr = newArr.map((arr:any) => arr.id);
             const index = indexArr.indexOf(id);
