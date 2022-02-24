@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-
 import TodoForm from "./todoForm";
 import TodoList from "./TodoList";
 
+
+interface Todo {
+    id: string
+    title: string
+    completed: boolean
+}
 const TodoApp = () => {
-    const initialState = () =>  [];
-    const [tasks, setTasks] = useState(initialState);
+    const [tasks, setTasks] = useState<Todo[]>([])
     const [newTask, setNewTask] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [editId, setEditId] = useState("");
@@ -84,8 +88,10 @@ const TodoApp = () => {
     };
 
     useEffect(() => {
-        localStorage.setItem("Tasks", JSON.stringify(tasks));
-    }, [tasks]);
+        fetch("/api/todos")
+            .then(res => res.json())
+            .then(todos => setTasks(todos))
+    }, [])
 
     useEffect(() => {
         inputRef.current.focus();
