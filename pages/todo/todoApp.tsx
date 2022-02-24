@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, {useEffect, useRef, useState} from "react";
+import {useQuery} from "react-query";
+import {v4 as uuidv4} from "uuid";
 import TodoForm from "./todoForm";
 import TodoList from "./TodoList";
+import {getTodos} from "../../api/todo"
 
 
 interface Todo {
@@ -10,6 +12,7 @@ interface Todo {
     completed: boolean
 }
 const TodoApp = () => {
+    const { isLoading, isError, data, error } = useQuery("todoObj", getTodos);
     const [tasks, setTasks] = useState<Todo[]>([])
     const [newTask, setNewTask] = useState("");
     const [isEditing, setIsEditing] = useState(false);
@@ -88,21 +91,22 @@ const TodoApp = () => {
     };
 
     useEffect(() => {
-        fetch("/api/todos")
-            .then(res => res.json())
-            .then(todos => setTasks(todos))
-    }, [])
-
-    useEffect(() => {
-        inputRef.current.focus();
-    }, []);
+        setTasks(data)
+    }, [data])
 
     const liStyle = {
         textDecoration: "line-through",
         fontWeight: "100",
         fontStyle: "italic"
     };
-    const TaskLists = tasks.map((task:any) => {
+
+    if (isError)
+        return (
+            <div className="App">
+                <h1>{error}</h1>
+            </div>
+        )
+    const TaskLists =tasks && tasks.length>0 && tasks.map((task) => {
         return (
             <li
                 className="list"
@@ -147,16 +151,22 @@ const TodoApp = () => {
                     isEditing={isEditing}
                     reference={inputRef}
                 />
-                <TodoList>
-                    {tasks.length > 0 ? (
-                        TaskLists
-                    ) : (
-                        <span className="no-task">
-              <i className="fas fa-tasks" />
-              <span className="no-task-p">Add tasks above</span>
-            </span>
-                    )}
-                </TodoList>
+                {isLoading?
+                    <div className="App">
+                        <h1>isLoading...</h1>
+                    </div>:
+                    <TodoList>
+                        {data.length > 0 ? (
+                                TaskLists
+                        ) : (
+                            <span className="no-task">
+                              <i className="fas fa-tasks"/>
+                              <span className="no-task-p">Add tasks above</span>
+                            </span>
+                        )}
+                    </TodoList>
+                }
+
             </div>
         </div>
     );

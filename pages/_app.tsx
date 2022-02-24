@@ -1,11 +1,17 @@
-import Head from "next/head";
 import '../styles/globals.css'
 import "@fontsource/fredoka-one"; // Defaults to weight 400.
 import '../styles/Todo.css'
-import type { AppProps } from 'next/app'
-import ContextProvider from "../lib/context";
-import Layout from "../components/common/Layout";
+import Head from "next/head";
 import { createServer } from "miragejs"
+import type { AppProps } from 'next/app'
+import Layout from "../components/common/Layout";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
+const queryClient = new QueryClient();
+
+
 const environment = process.env.NODE_ENV
 if (environment !== "production") {
   createServer({
@@ -45,11 +51,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
       />
     </Head>
-    <ContextProvider>
+    <QueryClientProvider client={queryClient}>
       <Layout>
         <Component {...pageProps} />
       </Layout>
-    </ContextProvider>
+    </QueryClientProvider>
   </>
 
 }
