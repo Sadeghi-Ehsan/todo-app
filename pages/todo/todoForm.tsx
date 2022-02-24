@@ -7,6 +7,7 @@ const TodoForm = (props:any) => {
                 <input
                     className="form-input"
                     type="text"
+                    aria-label="task-input"
                     placeholder="Add a task..."
                     value={props.value}
                     onChange={props.onChange}
