@@ -1,7 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import {fireEvent, render, screen} from '@testing-library/react'
 import Home from '../pages/index'
 import {QueryClient, QueryClientProvider} from "react-query";
-import userEvent from "@testing-library/user-event";
 
 describe('Home', () => {
     const queryClient = new QueryClient();
@@ -34,11 +33,23 @@ describe('Home', () => {
         const button = screen.getByRole('button', {name: /Clear tasks/i})
         expect(button).toBeInTheDocument()
     })
-    describe('when task name is provided', () => {
-        it('should enable the submit button and add the mentioned task!', () => {
-            const input = screen.getByLabelText('task-input')
-            userEvent.type(input, 'sample task')
-            expect(screen.getByRole('button', { name: /Add a task/i })).toBeEnabled()
-        })
-    })
+})
+const setup = () => {
+    const queryClient = new QueryClient();
+    const utils = render(<QueryClientProvider client={queryClient}>
+        <Home />
+    </QueryClientProvider>)
+    const input = utils.getByLabelText('task-input')
+    return {
+        input,
+        ...utils,
+    }
+}
+test('when task name is provided,should enable the submit button and add the mentioned task!', () => {
+    const {input} = setup()
+    fireEvent.change(input, {target: {value: 'sampleTaskName'}})
+    expect(input.value).toBe('sampleTaskName')
+
+
+
 })
